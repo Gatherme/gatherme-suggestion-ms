@@ -15,9 +15,6 @@ namespace gatherme_suggestion_ms
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-            /* Test
-            var service = new FakeData();
-            RunAsync(service).GetAwaiter().GetResult();*/
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -26,25 +23,6 @@ namespace gatherme_suggestion_ms
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-        public static async Task RunAsync(IFakeData service)
-        {
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
-            using (var client = new Neo4JClient(settings))
-            {
 
-                // Create Indices for faster Lookups:
-                //await client.CreateIndices();
-
-                //Create Base Data:
-                await client.CreateUser(service.Users);
-                await client.CreateCategory(service.Categories);
-                await client.CreateLike(service.Likes);
-                await client.CreateSuggestion(service.Suggestions);
-                // Create Relationships:
-                await client.CreateRelationshipLike(service.LikeInfos);
-                await client.CreateRelationshipUser(service.UserInfos);
-                await client.CreateRelationshipSuggestion(service.SuggestionInfos);
-            }
-        }
     }
 }
