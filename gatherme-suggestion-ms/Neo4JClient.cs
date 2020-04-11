@@ -11,6 +11,8 @@ namespace gatherme_suggestion_ms
 {
     public class Neo4JClient : IDisposable
     {
+        public static string uri = "bolt://localhost:7687";
+        //public static string uri = "bolt://0.0.0.0:7688";
         private readonly IDriver driver;
         //public static IAsyncSession session;
         public Neo4JClient(IConnectionSettings settings)

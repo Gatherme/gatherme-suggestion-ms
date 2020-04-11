@@ -26,6 +26,10 @@ namespace gatherme_suggestion_ms
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHttpsRedirection(options =>
+            {
+                options.HttpsPort = 443;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +45,8 @@ namespace gatherme_suggestion_ms
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseHttpsRedirection();
 
             app.UseEndpoints(endpoints =>
             {

@@ -13,7 +13,7 @@ namespace gatherme_suggestion_ms.Controllers
         [Route("[controller]/[action]")]
         public async Task<List<Category>> Index()
         {
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 CategoryService myService = new CategoryService(client);
@@ -23,7 +23,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpPost("[controller]/[action]")]
         public async Task NewCategory(Category category)
         {
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 CategoryService myService = new CategoryService(client);
@@ -34,7 +34,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpPost("[controller]/[action]")]
         public async Task<List<User>> FilterByCategory(Category category)
         {
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 CategoryService myService = new CategoryService(client);

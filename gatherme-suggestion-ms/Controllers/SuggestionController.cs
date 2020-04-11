@@ -13,7 +13,7 @@ namespace gatherme_suggestion_ms.Controllers
         [Route("[controller]/[action]")]
         public async Task<List<Suggestion>> Index()
         {
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);
@@ -25,7 +25,7 @@ namespace gatherme_suggestion_ms.Controllers
         public async Task<IList<Suggestion>> CreateSuggest(User user)
         {
 
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);
@@ -43,10 +43,10 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
 
-        [HttpPost("[controller]/[action]")]
+        [HttpPut("[controller]/[action]")]
         public async Task Deactivate(Suggestion suggestion)
         {
-            var settings = ConnectionSettings.CreateBasicAuth("bolt://localhost:7687", "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);
