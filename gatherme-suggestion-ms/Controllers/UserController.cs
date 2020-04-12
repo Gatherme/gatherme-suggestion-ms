@@ -55,17 +55,6 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpPost("[controller]/[action]")]
-        public async Task NewGet(UserInfo userInfo)
-        {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
-            using (var client = new Neo4JClient(settings))
-            {
-                UserService myService = new UserService(client);
-                myService.addMetadata(userInfo);
-                await myService.CreateRelationGatherUser(myService.UserInfos);
-            }
-        }
-        [HttpPost("[controller]/[action]")]
         public async Task NewLike(UserInfo userInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");

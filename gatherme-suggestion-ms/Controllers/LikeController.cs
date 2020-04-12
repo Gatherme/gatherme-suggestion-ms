@@ -43,7 +43,7 @@ namespace gatherme_suggestion_ms.Controllers
                 await myService.CreateRelationshipLike(myService.likeInfos);
             }
         }
-        [HttpPost("[controller]/[action]")]
+        [HttpGet("[controller]/[action]")]
         public async Task<List<User>> FilterByLike(Like like)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");

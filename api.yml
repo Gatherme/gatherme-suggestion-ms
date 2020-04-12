@@ -1,0 +1,405 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: gatherme suggestion ms
+  description: C# + Neo4j 
+  license:
+    name: Software Architecture, 2020-I
+host: host:5000
+basePath: /gatherme-suggestion-ms/
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /User:
+    get:
+      summary: Resturns all users
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UsersList'
+        '500':
+          description: Internal Server Error
+          
+  /User/NewUser:
+    post:
+      summary: Creates a new user
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          
+  /User/NewReport:
+    post:
+      summary: Creates a new relation REPORT
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/UserInfoReport'
+      responses:
+       '200':
+          description: OK
+       '500':
+          description: Internal Server Error
+          
+  /User/NewGather:
+    post: 
+      summary: Creates a new relation GATHER
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/UserInfoGather'
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          
+  /User/NewLike:
+    post: 
+      summary: Creates a new relation LIKE
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/UserInfoLike'
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          
+  /Like:
+    get:
+      summary: Resturns all likes
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/LikesList'
+        500:
+          description: Internal Server Error
+          
+  /Like/NewLike:
+    post:
+      summary: Creates a new like
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/Like'
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          
+  /Like/NewHave:
+    post:
+      summary: Creates a new relation HAVE
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/LikeInfo'
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          
+  /Like/FilterByLike:
+    get:
+      summary: Returns all users who have the same like
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/Like'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/UsersList'
+        500:
+          description: Internal Server Error 
+        
+  /Fake:
+    get:
+      summary: Creates indices in db
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          
+  /Home:
+    get:
+      summary: Returns a string.  it says "welcome stranger"
+      responses:
+        200:
+          description: OK
+          
+  /Suggestion:
+    get:
+      summary: Returns all suggestions 
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/SuggestionsList'
+        500:
+          description: Internal Server Error
+        
+  /Suggestion/CreateSuggest:
+    post:
+      summary: Creates new suggestion for a user
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/SuggestionsList'
+        500:
+          description: Internal Server Error
+        
+  /Suggestion/Deactivate:
+    put:
+      summary: Changes the state of suggestion from true to false
+      
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+        
+          
+  /Category:
+    get:
+      summary: Returns all categories
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/CategoryList'
+        500:
+          description: Internal Server Error
+        
+  /Category/NewCategory:
+    post:
+      summary: Creates a new category
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/Category'
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error 
+        
+  /Category/FilterByCategory:
+    get:
+      summary: Returns all users who have the same Category
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User Object
+          schema:
+            $ref: '#/definitions/Category'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/UsersList'
+        500:
+          description: Internal Server Error
+        
+    
+    
+          
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        
+  Like:
+    type: object
+    properties:
+      name:
+        type: string
+        
+  Category:
+    type: object
+    properties:
+      name:
+        type: string
+        
+  Suggestion:
+    type: object
+    properties:
+      id:
+        type: string
+      isActive:
+        type: boolean
+        
+     
+  UsersList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+  
+  ReportList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+          
+  GatherList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+          
+  LikesList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Like'
+          
+  SuggestionsList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Suggestion'
+          
+  CategoryList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Category'
+          
+          
+  UserInfoLike:
+    type: object
+    required: 
+      - user
+      - likes
+    properties:
+      user:
+        type: object
+        items:
+          $ref: '#/definitions/User'
+      likes:
+        type: object
+        items:
+          $ref: '#/definitions/LikesList'
+          
+  UserInfoReport:
+    type: object
+    required: 
+      - user
+      - userReports
+    properties:
+      user:
+        type: object
+        items:
+          $ref: '#/definitions/User'
+      userReports:
+        type: object
+        items:
+          $ref: '#/definitions/ReportList'
+          
+  UserInfoGather:
+    type: object
+    required: 
+      - user
+      - userGathers
+    properties:
+      user:
+        type: object
+        items:
+          $ref: '#/definitions/User'
+      userGathers:
+        type: object
+        items:
+          $ref: '#/definitions/GatherList'
+  LikeInfo:
+    type: object
+    required: 
+      - like
+      - category
+    properties:
+      like:
+        type: object
+        items:
+          $ref: '#/definitions/Like'
+      category:
+        type: object
+        items:
+          $ref: '#/definitions/Category' 
