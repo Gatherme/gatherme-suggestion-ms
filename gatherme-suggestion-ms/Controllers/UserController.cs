@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
+using System.Net.Http;
+ using System.Net;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
@@ -55,7 +57,7 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpPost("[controller]/[action]")]
-        public async Task NewLike(UserInfo userInfo)
+        public async Task<HttpResponseMessage> NewLike(UserInfo userInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
@@ -64,6 +66,8 @@ namespace gatherme_suggestion_ms.Controllers
                 myService.addMetadata(userInfo);
                 await myService.CreateRelationLikeUser(myService.UserInfos);
             }
+            
+            return new HttpResponseMessage(HttpStatusCode.Created);
         }
         [HttpPost("[controller]/[action]")]
         public IList<UserInfo> Test()

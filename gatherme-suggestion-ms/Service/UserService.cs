@@ -72,7 +72,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("WITH userMetadata, u")
             .AppendLine("UNWIND userMetadata.userReports AS userReport")
             .AppendLine("MATCH (e:User { id: userReport.id})")
-            .AppendLine("MERGE (e)-[r:REPORT]->(u)")
+            .AppendLine("MERGE (u)-[r:REPORT]->(e)")
             .ToString();
             try
             {
