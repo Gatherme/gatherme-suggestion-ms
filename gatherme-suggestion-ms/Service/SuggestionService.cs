@@ -100,7 +100,7 @@ namespace gatherme_suggestion_ms.Service
             }
             return listUsers;
         }
-        public async Task<IList<Suggestion>> CreateSuggestedRelation(IList<User> users)
+        public async Task<IList<SuggestionInfo>> CreateSuggestedRelation(IList<User> users)
         {
             List<User> myList = await searchUserToSuggest(users);
             if (myList.Count == 0)
@@ -127,7 +127,7 @@ namespace gatherme_suggestion_ms.Service
                 await CreateSuggestion(Suggestions);
                 await CreateRelationshipSuggestion(SuggestionInfos);
             }
-            return Suggestions;
+            return SuggestionInfos;
         }
         public async Task<List<Suggestion>> getAllSuggestions()
         {

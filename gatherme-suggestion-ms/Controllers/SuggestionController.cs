@@ -22,7 +22,7 @@ namespace gatherme_suggestion_ms.Controllers
         }
 
         [HttpPost("[controller]/[action]")]
-        public async Task<IList<Suggestion>> CreateSuggest(User user)
+        public async Task<IList<SuggestionInfo>> CreateSuggest(User user)
         {
 
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
@@ -31,11 +31,11 @@ namespace gatherme_suggestion_ms.Controllers
                 SuggestionService myService = new SuggestionService(client);
                 UserService myService2 = new UserService(client);
                 myService2.addUser(user);
-                IList<Suggestion> toReturn = await myService.CreateSuggestedRelation(myService2.Users);
+                IList<SuggestionInfo> toReturn = await myService.CreateSuggestedRelation(myService2.Users);
                 UserInfo metadata = new UserInfo
                 {
                     User = user,
-                    Suggestions = toReturn
+                    Suggestions = myService.Suggestions
                 };
                 myService2.addMetadata(metadata);
                 await myService2.CreateRelationSuggUser(myService2.UserInfos);
