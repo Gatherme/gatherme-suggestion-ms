@@ -26,7 +26,7 @@ namespace gatherme_suggestion_ms.Controllers
         }
         [HttpPost("[controller]/[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task NewUser(User user)
+        public async Task<IActionResult> NewUser(User user)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
@@ -35,6 +35,7 @@ namespace gatherme_suggestion_ms.Controllers
                 myService.addUser(user);
                 await myService.CreateUser(myService.Users);
             }
+            return Created(Neo4JClient.uri,user);
         }
         [HttpPost("[controller]/[action]")]
         public async Task NewReport(UserInfo userInfo)
