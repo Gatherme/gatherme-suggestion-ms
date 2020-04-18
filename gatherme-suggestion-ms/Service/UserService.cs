@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Text;
 using gatherme_suggestion_ms.Serializer;
 using System.Collections;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 namespace gatherme_suggestion_ms.Service
 {
     public class UserService : IUserService
@@ -21,12 +23,12 @@ namespace gatherme_suggestion_ms.Service
         }
 
         /*DB operations*/
+        
         public async Task CreateUser(IList<User> users)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $users AS user")
-            .AppendLine("MERGE (u:User {name: user.name})")
-            .AppendLine("SET u = user")
+            .AppendLine("CREATE(:User{id: user.id, name: user.name})")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try

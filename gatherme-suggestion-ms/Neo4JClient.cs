@@ -1,18 +1,14 @@
 using Neo4j.Driver;
-using gatherme_suggestion_ms.Models;
-using gatherme_suggestion_ms.Serializer;
 using gatherme_suggestion_ms.Settings;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace gatherme_suggestion_ms
 {
     public class Neo4JClient : IDisposable
     {
-        public static string uri = "bolt://localhost:7687";
-        //public static string uri = "bolt://0.0.0.0:7688";
+        //public static string uri = "bolt://localhost:7687";
+        public static string uri = " bolt://172.22.0.1:7687";
         private readonly IDriver driver;
         //public static IAsyncSession session;
         public Neo4JClient(IConnectionSettings settings)
@@ -24,11 +20,11 @@ namespace gatherme_suggestion_ms
         {
             string[] queries = {
                 "CREATE INDEX ON :User(name)",
-                "CREATE INDEX ON :User(id)",
-                "CREATE INDEX ON :Suggestion(id)",
+                "CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE",
+                "CREATE CONSTRAINT ON (s:Suggestion) ASSERT s.id IS UNIQUE",
                 "CREATE INDEX ON :Suggestion(isActive)",
-                "CREATE INDEX ON :Category(name)",
-                "CREATE INDEX ON :Like(name)",
+                "CREATE CONSTRAINT ON (c:Category) ASSERT c.name IS UNIQUE",
+                "CREATE CONSTRAINT ON (l:Like) ASSERT l.name IS UNIQUE"
             };
             var session = driver.AsyncSession(o => o.WithDatabase("neo4j"));
             try

@@ -24,8 +24,7 @@ namespace gatherme_suggestion_ms.Service
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $likes AS like")
-            .AppendLine("MERGE (l:Like {name: like.name})")
-            .AppendLine("SET l = like")
+            .AppendLine("CREATE(:Like{name: like.name})")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try

@@ -23,8 +23,7 @@ namespace gatherme_suggestion_ms.Service
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $suggestions AS suggestion")
-            .AppendLine("MERGE (s:Suggestion {id: suggestion.id})")
-            .AppendLine("SET s = suggestion")
+            .AppendLine("CREATE(:Suggestion{id: suggestion.id, isActive: suggestion.isActive})")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try

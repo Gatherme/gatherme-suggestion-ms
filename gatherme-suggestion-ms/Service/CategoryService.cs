@@ -24,8 +24,7 @@ namespace gatherme_suggestion_ms.Service
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $categories AS category")
-            .AppendLine("MERGE (c:Category {name: category.name})")
-            .AppendLine("SET c = category")
+            .AppendLine("CREATE(:Category{name: category.name})")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try

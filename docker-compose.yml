@@ -1,4 +1,7 @@
 version: '3.4'
+networks:
+  neo4j-network:
+    driver: bridge
 
 services:
   gathermesuggestionms:
@@ -6,16 +9,24 @@ services:
     build:
       context: .
       dockerfile: gatherme-suggestion-ms/Dockerfile
+    networks: 
+      - neo4j-network
     ports:
-      - "5000:5001"
+      - "8080:8080"
+      - "5000:5000"
+      - "80:80"
+      - "443:443"
 
   gatherme-suggestion-db:
     image: neo4j:4.0.0
+    networks: 
+      - neo4j-network
     ports: 
-      - "17475:7474"
-      - "7688:7687"
+      - "7474:7474"
+      - "7687:7687"
     environment: 
       NEO4J_AUTH: neo4j/admin
+      
 
 
 

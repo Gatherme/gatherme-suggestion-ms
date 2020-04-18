@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using gatherme_suggestion_ms.Models;
@@ -24,6 +25,7 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpPost("[controller]/[action]")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task NewUser(User user)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
@@ -57,6 +59,7 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpPost("[controller]/[action]")]
+        [ProducesDefaultResponseType]
         public async Task<HttpResponseMessage> NewLike(UserInfo userInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
