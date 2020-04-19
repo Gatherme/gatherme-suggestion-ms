@@ -1,0 +1,8 @@
+- Codigos de respuesta apropiados
+- Confirmación de operaciones
+- Operaciones Delete 
+- Operaciones put
+- Para suggestion, retornar sugerencias dado un usuario
+- Forma de mejorar sugerencias
+- Mejorar retorno de Neo4j en server
+- Retornos de toda información de elemento (_info)
