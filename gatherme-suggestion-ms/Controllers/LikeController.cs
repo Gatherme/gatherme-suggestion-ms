@@ -44,11 +44,14 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpGet("[controller]/[action]")]
-        public async Task<List<User>> FilterByLike(Like like)
+        public async Task<List<User>> FilterByLike(string name)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
+                Like like = new Like {
+                    Name = name
+                };
                 LikeService myService = new LikeService(client);
                 myService.addLike(like);
                 return await myService.GetUsers(myService.likes);

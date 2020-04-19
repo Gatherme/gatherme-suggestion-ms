@@ -6,3 +6,9 @@
 - Forma de mejorar sugerencias
 - Mejorar retorno de Neo4j en server
 - Retornos de toda información de elemento (_info)
+    -Suggestion debe devolver el usuario que sugiere
+    -Sobrecargar metodo de consultageneral para filtrar solo uno
+- Modificar modelo para reportar usuarios, de forma que sea un nuevo nodo que tenga una descripción?
+- Ver como poder cambiar el puerto 
+- Certificado SSL
+- Cambiar función de fake

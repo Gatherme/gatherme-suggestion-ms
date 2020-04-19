@@ -32,11 +32,14 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpGet("[controller]/[action]")]
-        public async Task<List<User>> FilterByCategory(Category category)
+        public async Task<List<User>> FilterByCategory(string name)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
+                Category category = new Category {
+                    Name = name
+                };
                 CategoryService myService = new CategoryService(client);
                 myService.addCategory(category);
                 return await myService.GetUsers(myService.Categories);
