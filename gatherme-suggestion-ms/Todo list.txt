@@ -12,3 +12,4 @@
 - Ver como poder cambiar el puerto 
 - Certificado SSL
 - Cambiar función de fake
+- Clave y usuario globales

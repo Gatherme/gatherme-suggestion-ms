@@ -28,12 +28,13 @@ namespace gatherme_suggestion_ms.Service
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $users AS user")
-            .AppendLine("CREATE(:User{id: user.id, name: user.name})")
+            .AppendLine("CREATE(u:User{id: user.id, name: user.name})")
+            .AppendLine("RETURN u.id")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try
             {
-                await session.RunAsync(cypher, new Dictionary<string, object>() { { "users", ParameterSerializer.ToDictionary(users) } });
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "users", ParameterSerializer.ToDictionary(users) } });
             }
             finally
             {
@@ -53,6 +54,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("UNWIND userMetadata.likes AS like")
             .AppendLine("MATCH (l:Like { name: like.name})")
             .AppendLine("MERGE (u)-[r:LIKE]->(l)")
+            .AppendLine("RETURN u.name, type(r), l.name")
             .ToString();
             try
             {
@@ -75,6 +77,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("UNWIND userMetadata.userReports AS userReport")
             .AppendLine("MATCH (e:User { id: userReport.id})")
             .AppendLine("MERGE (u)-[r:REPORT]->(e)")
+            .AppendLine("RETURN u.name, type(r), e.name")
             .ToString();
             try
             {
@@ -97,6 +100,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("UNWIND userMetadata.gathers AS gather")
             .AppendLine("MATCH (g:User { id: gather.id})")
             .AppendLine("MERGE (u)-[r:GATHER]-(g)")
+            .AppendLine("RETURN u.name, type(r), g.name")
             .ToString();
             try
             {
@@ -119,6 +123,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("UNWIND userMetadata.suggestion AS suggestion")
             .AppendLine("MATCH (s:Suggestion { id: suggestion.id})")
             .AppendLine("MERGE (u)-[r:GET]->(s)")
+            .AppendLine("RETURN u.name, type(r), s.id")
             .ToString();
             try
             {

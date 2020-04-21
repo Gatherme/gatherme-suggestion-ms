@@ -6,7 +6,7 @@ using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
 using System.Net.Http;
- using System.Net;
+using System.Net;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
@@ -35,7 +35,7 @@ namespace gatherme_suggestion_ms.Controllers
                 myService.addUser(user);
                 await myService.CreateUser(myService.Users);
             }
-            return Created(Neo4JClient.uri,user);
+            return Created(Neo4JClient.uri, user);
         }
         [HttpPost("[controller]/[action]")]
         public async Task NewReport(UserInfo userInfo)
@@ -70,7 +70,7 @@ namespace gatherme_suggestion_ms.Controllers
                 myService.addMetadata(userInfo);
                 await myService.CreateRelationLikeUser(myService.UserInfos);
             }
-            
+
             return new HttpResponseMessage(HttpStatusCode.Created);
         }
         [HttpPost("[controller]/[action]")]

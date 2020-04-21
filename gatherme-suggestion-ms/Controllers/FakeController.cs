@@ -4,6 +4,8 @@ using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
