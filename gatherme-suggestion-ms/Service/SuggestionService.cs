@@ -104,7 +104,7 @@ namespace gatherme_suggestion_ms.Service
             List<User> myList = await searchUserToSuggest(users);
             if (myList.Count == 0)
             {
-                //
+                //Error
             }
             else
             {
@@ -180,6 +180,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("UNWIND $suggestions AS suggestion")
             .AppendLine("MATCH (s:Suggestion {id: suggestion.id})")
             .AppendLine("SET s.isActive = false")
+            .AppendLine("RETURN s.id, s.isActive")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try

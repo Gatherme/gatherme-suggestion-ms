@@ -18,13 +18,14 @@ namespace gatherme_suggestion_ms.Service
             this.myLikes = new ArrayList();
             this.myLikeInfos = new ArrayList();
         }
-        
+
         /*DB operations*/
         public async Task CreateLike(IList<Like> likes)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $likes AS like")
-            .AppendLine("CREATE(:Like{name: like.name})")
+            .AppendLine("CREATE(l:Like{name: like.name})")
+            .AppendLine("RETURN l.name")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             try
@@ -37,6 +38,38 @@ namespace gatherme_suggestion_ms.Service
             }
         }
 
+        public async Task<List<bool>> ExistLike(IList<Like> likes)
+        {
+            string cypher = new StringBuilder()
+            .AppendLine("UNWIND $likes AS like")
+            .AppendLine("OPTIONAL MATCH (l:Like{name: like.name})")
+            .AppendLine("RETURN l.name")
+            .ToString();
+            var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            List<bool> boolList = new List<bool>();
+            try
+            {
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "likes", ParameterSerializer.ToDictionary(likes) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        if (item.Value == null)
+                        {
+                            boolList.Add(false);
+                        }else{
+                            boolList.Add(true);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return boolList;
+        }
+
         public async Task CreateRelationshipLike(IList<LikeInfo> likeMetadata)
         {
             string cypher = new StringBuilder()
@@ -47,7 +80,7 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("WITH likeMetadata, l")
             .AppendLine("UNWIND likeMetadata.category AS category")
             .AppendLine("MATCH (c:Category { name: category.name})")
-            .AppendLine("MERGE (l)-[r:HAVE]->(c)")
+            .AppendLine("MERGE (l)-[r:IS]->(c)")
             .AppendLine("RETURN l.name, type(r), c.name")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
@@ -97,11 +130,10 @@ namespace gatherme_suggestion_ms.Service
 
         public async Task<List<User>> GetUsers(IList<Like> likes)
         {
-            //MATCH (l:Like {name: "golf"})<-[:LIKE]-(u:User) RETURN u
             string cypher = new StringBuilder()
               .AppendLine("UNWIND $likes AS like")
               .AppendLine("MATCH (l:Like { name: like.name })")
-              .AppendLine("MATCH (l)<-[:LIKE]-(u:User)")
+              .AppendLine("MATCH (l)<-[r:LIKE]-(u:User)")
               .AppendLine("RETURN u.id, u.name")
               .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
