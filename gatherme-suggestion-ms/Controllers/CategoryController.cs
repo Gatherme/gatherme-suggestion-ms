@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
-using System.Net.Http;
-using System.Net;
+using System.Threading.Tasks;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
-    public class CategoryController
+    public class CategoryController : Controller
     {
         [Route("[controller]")]
         [Route("[controller]/[action]")]
@@ -23,14 +22,20 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpPost("[controller]/[action]")]
-        public async Task NewCategory(Category category)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> NewCategory(Category category)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 CategoryService myService = new CategoryService(client);
                 myService.addCategory(category);
-                await myService.CreateCategory(myService.Categories);
+                string aux = await myService.CreateCategory(myService.Categories);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
         }
         [HttpGet("[controller]/[action]")]
@@ -39,7 +44,8 @@ namespace gatherme_suggestion_ms.Controllers
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
-                Category category = new Category {
+                Category category = new Category
+                {
                     Name = name
                 };
                 CategoryService myService = new CategoryService(client);

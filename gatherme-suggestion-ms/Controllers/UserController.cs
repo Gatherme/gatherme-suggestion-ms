@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
-using System.Net.Http;
-using System.Net;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
@@ -14,7 +12,7 @@ namespace gatherme_suggestion_ms.Controllers
     public class UserController : Controller
     {
         [Route("[controller]")]
-        [Route("[controller]/[action]")]
+        [HttpGet("[controller]/[action]")]
         public async Task<List<User>> Index()
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
@@ -33,45 +31,66 @@ namespace gatherme_suggestion_ms.Controllers
             {
                 UserService myService = new UserService(client);
                 myService.addUser(user);
-                await myService.CreateUser(myService.Users);
+                string aux = await myService.CreateUser(myService.Users);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
-            return Created(Neo4JClient.uri, user);
         }
+
         [HttpPost("[controller]/[action]")]
-        public async Task NewReport(UserInfo userInfo)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> NewReport(UserInfo userInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
                 myService.addMetadata(userInfo);
-                await myService.CreateRelationReportUser(myService.UserInfos);
+                string aux = await myService.CreateRelationReportUser(myService.UserInfos);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
         }
         [HttpPost("[controller]/[action]")]
-        public async Task NewGather(UserInfo userInfo)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> NewGather(UserInfo userInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
                 myService.addMetadata(userInfo);
-                await myService.CreateRelationGatherUser(myService.UserInfos);
+                string aux = await myService.CreateRelationGatherUser(myService.UserInfos);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
         }
         [HttpPost("[controller]/[action]")]
-        [ProducesDefaultResponseType]
-        public async Task<HttpResponseMessage> NewLike(UserInfo userInfo)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> NewLike(UserInfo userInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
                 myService.addMetadata(userInfo);
-                await myService.CreateRelationLikeUser(myService.UserInfos);
+                string aux =  await myService.CreateRelationLikeUser(myService.UserInfos);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
 
-            return new HttpResponseMessage(HttpStatusCode.Created);
         }
         [HttpPost("[controller]/[action]")]
         public IList<UserInfo> Test()

@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.Net;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
@@ -23,26 +22,38 @@ namespace gatherme_suggestion_ms.Controllers
             }
         }
         [HttpPost("[controller]/[action]")]
-        public async Task NewLike(Like like)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> NewLike(Like like)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 LikeService myService = new LikeService(client);
                 myService.addLike(like);
-                await myService.CreateLike(myService.likes);
+                string aux = await myService.CreateLike(myService.likes);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
 
         }
         [HttpPost("[controller]/[action]")]
-        public async Task NewHave(LikeInfo like)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> NewIs(LikeInfo like)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 LikeService myService = new LikeService(client);
                 myService.addMetadata(like);
-                await myService.CreateRelationshipLike(myService.likeInfos);
+                string aux = await myService.CreateRelationshipLike(myService.likeInfos);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Created(Neo4JClient.uri, ans);
             }
         }
         [HttpGet("[controller]/[action]")]
@@ -77,7 +88,7 @@ namespace gatherme_suggestion_ms.Controllers
                 return ans[0];
             }
         }
-        
+
 
     }
 }

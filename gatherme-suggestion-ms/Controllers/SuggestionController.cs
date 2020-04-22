@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using gatherme_suggestion_ms.Models;
 using gatherme_suggestion_ms.Service;
 using gatherme_suggestion_ms.Settings;
-using System.Net.Http;
-using System.Net;
 namespace gatherme_suggestion_ms.Controllers
 {
     [ApiController]
-    public class SuggestionController
+    public class SuggestionController : Controller
     {
         [Route("[controller]")]
         [Route("[controller]/[action]")]
@@ -46,14 +45,20 @@ namespace gatherme_suggestion_ms.Controllers
         }
 
         [HttpPut("[controller]/[action]")]
-        public async Task Deactivate(Suggestion suggestion)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Deactivate(Suggestion suggestion)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);
                 myService.addSuggestion(suggestion);
-                await myService.ChangeIsActive(myService.Suggestions);
+                string aux = await myService.ChangeIsActive(myService.Suggestions);
+                Response ans = new Response()
+                {
+                    Ans = aux
+                };
+                return Ok(ans);
             }
         }
     }

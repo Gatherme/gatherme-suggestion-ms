@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using System.Text;
 using gatherme_suggestion_ms.Serializer;
 using System.Collections;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 namespace gatherme_suggestion_ms.Service
 {
     public class UserService : IUserService
@@ -23,8 +21,8 @@ namespace gatherme_suggestion_ms.Service
         }
 
         /*DB operations*/
-        
-        public async Task CreateUser(IList<User> users)
+
+        public async Task<string> CreateUser(IList<User> users)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $users AS user")
@@ -32,17 +30,26 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("RETURN u.id")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            string ans = "";
             try
             {
                 var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "users", ParameterSerializer.ToDictionary(users) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString();
+                    }
+                }
             }
             finally
             {
                 await session.CloseAsync();
             }
+            return ans;
         }
 
-        public async Task CreateRelationLikeUser(IList<UserInfo> userMetadata)
+        public async Task<string> CreateRelationLikeUser(IList<UserInfo> userMetadata)
         {
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             string cypher = new StringBuilder()
@@ -56,16 +63,25 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("MERGE (u)-[r:LIKE]->(l)")
             .AppendLine("RETURN u.name, type(r), l.name")
             .ToString();
+            string ans = "";
             try
             {
                 var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "userMetadata", ParameterSerializer.ToDictionary(userMetadata) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally
             {
                 await session.CloseAsync();
             }
+            return ans;
         }
-        public async Task CreateRelationReportUser(IList<UserInfo> userMetadata)
+        public async Task<string> CreateRelationReportUser(IList<UserInfo> userMetadata)
         {
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             string cypher = new StringBuilder()
@@ -79,16 +95,25 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("MERGE (u)-[r:REPORT]->(e)")
             .AppendLine("RETURN u.name, type(r), e.name")
             .ToString();
+            string ans = "";
             try
             {
                 var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "userMetadata", ParameterSerializer.ToDictionary(userMetadata) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally
             {
                 await session.CloseAsync();
             }
+            return ans;
         }
-        public async Task CreateRelationGatherUser(IList<UserInfo> userMetadata)
+        public async Task<string> CreateRelationGatherUser(IList<UserInfo> userMetadata)
         {
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
             string cypher = new StringBuilder()
@@ -102,14 +127,23 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("MERGE (u)-[r:GATHER]-(g)")
             .AppendLine("RETURN u.name, type(r), g.name")
             .ToString();
+            string ans = "";
             try
             {
                 var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "userMetadata", ParameterSerializer.ToDictionary(userMetadata) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally
             {
                 await session.CloseAsync();
             }
+            return ans;
         }
         public async Task CreateRelationSuggUser(IList<UserInfo> userMetadata)
         {
@@ -125,9 +159,17 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("MERGE (u)-[r:GET]->(s)")
             .AppendLine("RETURN u.name, type(r), s.id")
             .ToString();
+            string ans = "";
             try
             {
                 var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "userMetadata", ParameterSerializer.ToDictionary(userMetadata) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally
             {

@@ -20,7 +20,7 @@ namespace gatherme_suggestion_ms.Service
 
         /*DB operations*/
 
-        public async Task CreateCategory(IList<Category> categories)
+        public async Task<string> CreateCategory(IList<Category> categories)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $categories AS category")
@@ -28,11 +28,20 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("RETURN c.name")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            string ans = "";
             try
             {
-                await session.RunAsync(cypher, new Dictionary<string, object>() { { "categories", ParameterSerializer.ToDictionary(categories) } });
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "categories", ParameterSerializer.ToDictionary(categories) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally { await session.CloseAsync(); }
+            return ans;
         }
         public async Task<List<Category>> GetAllCategories()
         {

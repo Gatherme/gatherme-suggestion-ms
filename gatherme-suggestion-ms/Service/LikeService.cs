@@ -20,7 +20,7 @@ namespace gatherme_suggestion_ms.Service
         }
 
         /*DB operations*/
-        public async Task CreateLike(IList<Like> likes)
+        public async Task<string> CreateLike(IList<Like> likes)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $likes AS like")
@@ -28,14 +28,23 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("RETURN l.name")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            string ans = "";
             try
             {
-                await session.RunAsync(cypher, new Dictionary<string, object>() { { "likes", ParameterSerializer.ToDictionary(likes) } });
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "likes", ParameterSerializer.ToDictionary(likes) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally
             {
                 await session.CloseAsync();
             }
+            return ans;
         }
 
         public async Task<List<bool>> ExistLike(IList<Like> likes)
@@ -57,7 +66,9 @@ namespace gatherme_suggestion_ms.Service
                         if (item.Value == null)
                         {
                             boolList.Add(false);
-                        }else{
+                        }
+                        else
+                        {
                             boolList.Add(true);
                         }
                     }
@@ -70,7 +81,7 @@ namespace gatherme_suggestion_ms.Service
             return boolList;
         }
 
-        public async Task CreateRelationshipLike(IList<LikeInfo> likeMetadata)
+        public async Task<string> CreateRelationshipLike(IList<LikeInfo> likeMetadata)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $likeMetadata AS likeMetadata")
@@ -84,14 +95,23 @@ namespace gatherme_suggestion_ms.Service
             .AppendLine("RETURN l.name, type(r), c.name")
             .ToString();
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            string ans = "";
             try
             {
                 var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "likeMetadata", ParameterSerializer.ToDictionary(likeMetadata) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        ans += item.Value.ToString() + " ";
+                    }
+                }
             }
             finally
             {
                 await session.CloseAsync();
             }
+            return ans;
         }
 
         public async Task<List<Like>> getAllLikes()
