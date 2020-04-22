@@ -80,7 +80,7 @@ namespace gatherme_suggestion_ms.Service
             string cypher = new StringBuilder()
               .AppendLine("UNWIND $categories AS category")
               .AppendLine("MATCH (c:Category { name: category.name })")
-              .AppendLine("MATCH (c)<-[:HAVE]-(l:Like)")
+              .AppendLine("MATCH (c)<-[:IS]-(l:Like)")
               .AppendLine("WITH c,l")
               .AppendLine("MATCH (l)<-[:LIKE]-(u:User)")
               .AppendLine("RETURN u.id, u.name")

@@ -105,6 +105,7 @@ namespace gatherme_suggestion_ms.Service
             if (myList.Count == 0)
             {
                 //Error
+                System.Console.WriteLine("Vacio");
             }
             else
             {
