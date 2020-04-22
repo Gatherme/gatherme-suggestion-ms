@@ -53,5 +53,21 @@ namespace gatherme_suggestion_ms.Controllers
                 return await myService.GetUsers(myService.Categories);
             }
         }
+        [HttpGet("[controller]/[action]")]
+        public async Task<bool> ExistCategory(string name)
+        {
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            using (var client = new Neo4JClient(settings))
+            {
+                Category like = new Category
+                {
+                    Name = name
+                };
+                CategoryService myService = new CategoryService(client);
+                myService.addCategory(like);
+                List<bool> ans = await myService.ExistCategory(myService.Categories);
+                return ans[0];
+            }
+        }
     }
 }

@@ -122,6 +122,40 @@ namespace gatherme_suggestion_ms.Service
             }
             return users;
         }
+        public async Task<List<bool>> ExistCategory(IList<Category> categories)
+        {
+            string cypher = new StringBuilder()
+            .AppendLine("UNWIND $categories AS category")
+            .AppendLine("OPTIONAL MATCH (c:Category{name: category.name})")
+            .AppendLine("RETURN c.name")
+            .ToString();
+            var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            List<bool> boolList = new List<bool>();
+            try
+            {
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "categories", ParameterSerializer.ToDictionary(categories) } });
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        if (item.Value == null)
+                        {
+                            boolList.Add(false);
+                        }
+                        else
+                        {
+                            boolList.Add(true);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return boolList;
+        }
+
         /*Interfaz*/
         public void addCategory(Category category)
         {

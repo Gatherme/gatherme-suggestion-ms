@@ -41,13 +41,13 @@ namespace gatherme_suggestion_ms.Controllers
         }
         [HttpPost("[controller]/[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> NewIs(LikeInfo like)
+        public async Task<IActionResult> NewIs(LikeInfo likeInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
             using (var client = new Neo4JClient(settings))
             {
                 LikeService myService = new LikeService(client);
-                myService.addMetadata(like);
+                myService.addMetadata(likeInfo);
                 string aux = await myService.CreateRelationshipLike(myService.likeInfos);
                 Response ans = new Response()
                 {
