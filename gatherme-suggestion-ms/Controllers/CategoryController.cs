@@ -41,7 +41,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpGet("[controller]/[action]")]
         public async Task<List<User>> FilterByCategory(string name)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 Category category = new Category
@@ -56,7 +56,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpGet("[controller]/[action]")]
         public async Task<bool> ExistCategory(string name)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 Category like = new Category

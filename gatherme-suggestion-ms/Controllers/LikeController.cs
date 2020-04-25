@@ -14,7 +14,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpGet("[controller]/[action]")]
         public async Task<List<Like>> Index()
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 LikeService myService = new LikeService(client);
@@ -25,7 +25,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewLike(Like like)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 LikeService myService = new LikeService(client);
@@ -43,7 +43,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewIs(LikeInfo likeInfo)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 LikeService myService = new LikeService(client);
@@ -59,7 +59,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpGet("[controller]/[action]")]
         public async Task<List<User>> FilterByLike(string name)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 Like like = new Like
@@ -75,7 +75,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpGet("[controller]/[action]")]
         public async Task<bool> ExistLike(string name)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 Like like = new Like

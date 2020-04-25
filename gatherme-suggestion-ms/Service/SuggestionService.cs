@@ -19,6 +19,7 @@ namespace gatherme_suggestion_ms.Service
             this.mySuggestionInfo = new ArrayList();
         }
         /*DB operations*/
+        //Crea sugerencias de usuario en la base de datos
         private async Task CreateSuggestion(IList<Suggestion> suggestions)
         {
             string cypher = new StringBuilder()
@@ -32,6 +33,7 @@ namespace gatherme_suggestion_ms.Service
             }
             finally { await session.CloseAsync(); }
         }
+        //Crea la relacion de sugerencia de usuario
         private async Task CreateRelationshipSuggestion(IList<SuggestionInfo> suggestionMetadata)
         {
             string cypher = new StringBuilder()
@@ -51,14 +53,20 @@ namespace gatherme_suggestion_ms.Service
             }
             finally { await session.CloseAsync(); }
         }
+        //Busca los usuarios que va a sugerir
         private async Task<List<User>> searchUserToSuggest(IList<User> users)
         {
             string cypher = new StringBuilder()
             .AppendLine("UNWIND $users AS user")
+            //Trae usuario
             .AppendLine("MATCH (mu:User { id: user.id})")
+            //Identifica los gustos del usuario
             .AppendLine("MATCH (mu)--(l:Like)")
+            //Identifica los susuarios que tenga gustos como el objetivo
             .AppendLine("MATCH (l)--(u:User)")
+            //Rechaza todos los usuarios con los que ya tenga relación y autocontenencia
             .AppendLine("WHERE  NOT ((mu)-->(u)) AND NOT(mu.id = u.id)")
+            //Rechaza si ya tienen una sugerencia
             .AppendLine("AND NOT((mu)-[:GET]-(:Suggestion)-[:SUGGEST]-(u))")
             .AppendLine("RETURN u.id, u.name")
             .ToString();
@@ -99,6 +107,7 @@ namespace gatherme_suggestion_ms.Service
             }
             return listUsers;
         }
+        //Reune todas las funciones anteriores y crea la sugerencias armadas
         public async Task<IList<SuggestionInfo>> CreateSuggestedRelation(IList<User> users)
         {
             List<User> myList = await searchUserToSuggest(users);
@@ -129,6 +138,7 @@ namespace gatherme_suggestion_ms.Service
             }
             return SuggestionInfos;
         }
+        //Devuelve todas las sugerencias. Poco util
         public async Task<List<Suggestion>> getAllSuggestions()
         {
             string cypher = new StringBuilder()
@@ -175,6 +185,7 @@ namespace gatherme_suggestion_ms.Service
             }
             return suggestionList;
         }
+        //Pasa el estado de activado a desactivado
         public async Task<string> ChangeIsActive(IList<Suggestion> suggestions)
         {
             string cypher = new StringBuilder()
@@ -199,7 +210,55 @@ namespace gatherme_suggestion_ms.Service
             finally { await session.CloseAsync(); }
             return ans;
         }
-
+        //Consultada sugerencias de un usuario
+        public async Task<List<SuggestionInfo>> getSuggestion(IList<User> users)
+        {
+            string cypher = new StringBuilder()
+            .AppendLine("UNWIND $users AS user")
+            //Identifica usuario
+            .AppendLine("MATCH (myuser:User {id: user.id})")
+            //Traer sugerencias que tiene el usuario
+            .AppendLine("MATCH ((myuser)-[:GET]-(s:Suggestion)-[:SUGGEST]-(u:User))")
+            //Filtrar que no esten desactivados
+            .AppendLine("WHERE NOT(s.isActive = false)")
+            .AppendLine("RETURN u.id, u.name, s.id, s.isActive")
+            .ToString();
+            var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            List<SuggestionInfo> mySuggInfoList = new List<SuggestionInfo>();
+            try
+            {
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "users", ParameterSerializer.ToDictionary(users) } });
+                while (await reader.FetchAsync())
+                {
+                    int count = 0;
+                    string[] aux = new string[3];
+                    foreach (var item in reader.Current.Values)
+                    {
+                        if(count == 3){
+                            User myuser = new User{
+                                Id=aux[0],
+                                Name=aux[1]
+                            };
+                            Suggestion mySugg = new Suggestion{
+                                Id=aux[2],
+                                IsActive = (bool) item.Value
+                            };
+                            SuggestionInfo SuggInfo = new SuggestionInfo
+                            {
+                                Suggestion =mySugg,
+                                SuggestedUser = myuser
+                            };
+                            mySuggInfoList.Add(SuggInfo);
+                        }else{
+                            aux[count] = item.Value.ToString();
+                        }
+                        count++;
+                    }
+                }
+            }
+            finally { await session.CloseAsync(); }
+            return mySuggInfoList;
+        }
 
         /*Interfaz*/
         public void addSuggestion(Suggestion suggestion)

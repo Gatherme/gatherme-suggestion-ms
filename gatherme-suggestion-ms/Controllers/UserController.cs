@@ -15,7 +15,7 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpGet("[controller]/[action]")]
         public async Task<List<User>> Index()
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
@@ -26,7 +26,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewUser(User user)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
@@ -44,7 +44,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewReport(UserInfo userInfo)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
@@ -61,7 +61,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewGather(UserInfo userInfo)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
@@ -78,7 +78,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewLike(UserInfo userInfo)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 UserService myService = new UserService(client);
