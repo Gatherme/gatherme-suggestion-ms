@@ -9,6 +9,8 @@ namespace gatherme_suggestion_ms
     {
         //public static string uri = "bolt://localhost:7687";
         public static string uri = "bolt://172.17.0.1:7687";
+        public static string user = "neo4j";
+        public static string password="admin";
         private readonly IDriver driver;
         //public static IAsyncSession session;
         public Neo4JClient(IConnectionSettings settings)
@@ -24,7 +26,8 @@ namespace gatherme_suggestion_ms
                 "CREATE CONSTRAINT ON (s:Suggestion) ASSERT s.id IS UNIQUE",
                 "CREATE INDEX ON :Suggestion(isActive)",
                 "CREATE CONSTRAINT ON (c:Category) ASSERT c.name IS UNIQUE",
-                "CREATE CONSTRAINT ON (l:Like) ASSERT l.name IS UNIQUE"
+                "CREATE CONSTRAINT ON (l:Like) ASSERT l.name IS UNIQUE",
+                "CREATE CONSTRAINT ON (r:Report) ASSERT r.id IS UNIQUE"
             };
             var session = driver.AsyncSession(o => o.WithDatabase("neo4j"));
             try

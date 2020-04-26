@@ -57,7 +57,6 @@ namespace gatherme_suggestion_ms.Service
             Gathers = new[] { user3 },
             User = user1,
             Likes = new[] { like },
-            UserReports = new[] { user2 },
             Suggestions = new[] { suggestion }
         };
         public IList<User> Users

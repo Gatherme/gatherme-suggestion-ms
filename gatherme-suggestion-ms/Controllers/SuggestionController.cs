@@ -14,19 +14,36 @@ namespace gatherme_suggestion_ms.Controllers
         [Route("[controller]/[action]")]
         public async Task<List<Suggestion>> Index()
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);
                 return await myService.getAllSuggestions();
             }
         }
+        [HttpGet("[controller]/[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> getSuggestion(string id)
+        {
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
+            using (var client = new Neo4JClient(settings))
+            {
+                User user = new User {
+                    Id = id
+                };
+                UserService aux = new UserService(client);
+                aux.addUser(user);
+                SuggestionService myService = new SuggestionService(client);
+                List<SuggestionInfo> ans = await myService.getSuggestion(aux.Users);
+                return Ok(ans);
+            }         
+        }
 
         [HttpPost("[controller]/[action]")]
         public async Task<IList<SuggestionInfo>> CreateSuggest(User user)
         {
 
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);
@@ -48,7 +65,7 @@ namespace gatherme_suggestion_ms.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Deactivate(Suggestion suggestion)
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 SuggestionService myService = new SuggestionService(client);

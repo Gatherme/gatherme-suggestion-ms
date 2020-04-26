@@ -15,7 +15,7 @@ namespace gatherme_suggestion_ms.Controllers
         [Route("[controller]/[action]")]
         public async Task Index()
         {
-            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, "neo4j", "admin");
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 await client.CreateIndices();
