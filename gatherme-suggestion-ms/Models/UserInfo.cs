@@ -10,8 +10,6 @@ namespace gatherme_suggestion_ms.Models
         public IList<Like> Likes {get;set;}
         [JsonProperty("gathers")]
         public IList<User> Gathers {get;set;}
-        [JsonProperty("userReports")]
-        public IList<User> UserReports {get;set;}
         [JsonProperty("suggestion")]
         public  IList<Suggestion> Suggestions {get;set;}
     }

@@ -81,38 +81,6 @@ namespace gatherme_suggestion_ms.Service
             }
             return ans;
         }
-        public async Task<string> CreateRelationReportUser(IList<UserInfo> userMetadata)
-        {
-            var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
-            string cypher = new StringBuilder()
-            .AppendLine("UNWIND $userMetadata AS userMetadata")
-            //Find User
-            .AppendLine("MATCH (u:User { id: userMetadata.user.id })")
-            // User Reports
-            .AppendLine("WITH userMetadata, u")
-            .AppendLine("UNWIND userMetadata.userReports AS userReport")
-            .AppendLine("MATCH (e:User { id: userReport.id})")
-            .AppendLine("MERGE (u)-[r:REPORT]->(e)")
-            .AppendLine("RETURN u.name, type(r), e.name")
-            .ToString();
-            string ans = "";
-            try
-            {
-                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "userMetadata", ParameterSerializer.ToDictionary(userMetadata) } });
-                while (await reader.FetchAsync())
-                {
-                    foreach (var item in reader.Current.Values)
-                    {
-                        ans += item.Value.ToString() + " ";
-                    }
-                }
-            }
-            finally
-            {
-                await session.CloseAsync();
-            }
-            return ans;
-        }
         public async Task<string> CreateRelationGatherUser(IList<UserInfo> userMetadata)
         {
             var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
