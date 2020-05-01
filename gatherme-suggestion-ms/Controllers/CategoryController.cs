@@ -59,14 +59,30 @@ namespace gatherme_suggestion_ms.Controllers
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
-                Category like = new Category
+                Category category = new Category
                 {
                     Name = name
                 };
                 CategoryService myService = new CategoryService(client);
-                myService.addCategory(like);
+                myService.addCategory(category);
                 List<bool> ans = await myService.ExistCategory(myService.Categories);
                 return ans[0];
+            }
+        }
+        [HttpGet("[controller]/[action]")]
+        public async Task<List<Like>> LikeByCategory(string name)
+        {
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
+            using (var client = new Neo4JClient(settings))
+            {
+                Category category = new Category
+                {
+                    Name = name
+                };
+                CategoryService myService = new CategoryService(client);
+                myService.addCategory(category);
+                List<Like> ans = await myService.LikeByCategory(myService.Categories);
+                return ans;
             }
         }
     }

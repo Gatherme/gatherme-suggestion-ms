@@ -22,6 +22,21 @@ namespace gatherme_suggestion_ms.Controllers
                 return await myService.GetAllUsers();
             }
         }
+        [HttpGet("[controller]/[action]")]
+        public async Task<List<Like>> UsersLikes(string id)
+        {
+            var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
+            using (var client = new Neo4JClient(settings))
+            {
+                UserService myService = new UserService(client);
+                User auxUser = new User{
+                    Id = id
+                };
+                myService.addUser(auxUser);
+                List<Like> ans = await myService.UsersLikes(myService.Users);
+                return ans;
+            }
+        }
         [HttpPost("[controller]/[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> NewUser(User user)

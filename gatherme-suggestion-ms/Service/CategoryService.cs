@@ -155,6 +155,39 @@ namespace gatherme_suggestion_ms.Service
             }
             return boolList;
         }
+        public async Task<List<Like>> LikeByCategory(IList<Category> categories)
+        {
+            string cypher = new StringBuilder()
+            .AppendLine("UNWIND $categories AS category")
+            .AppendLine("MATCH (c:Category{name: category.name})")
+            .AppendLine("MATCH (c)<-[:IS]-(l:Like)")
+            .AppendLine("RETURN l.name")
+            .ToString();
+            var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            List<Like> myLikes = new List<Like>();
+            try
+            {
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "categories", ParameterSerializer.ToDictionary(categories) } });
+                System.Console.WriteLine("****Likes by category:");
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        Like auxLike = new Like
+                        {
+                            Name = item.Value.ToString()
+                        };
+                        System.Console.WriteLine(item.Value.ToString());
+                        myLikes.Add(auxLike);
+                    }
+                }
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return myLikes;
+        }
 
         /*Interfaz*/
         public void addCategory(Category category)
