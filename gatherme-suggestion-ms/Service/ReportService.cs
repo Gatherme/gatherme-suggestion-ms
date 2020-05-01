@@ -106,7 +106,7 @@ namespace gatherme_suggestion_ms.Service
             finally { await session.CloseAsync(); }
         }
         //Crear reporte
-        public async Task<string> CeateReport(ReportInfo reportInfo)
+        public async Task<string> CreateReport(ReportInfo reportInfo)
         {
             Report auxReport = new Report{
                 Id = System.Guid.NewGuid().ToString(),

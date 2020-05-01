@@ -24,13 +24,13 @@ namespace gatherme_suggestion_ms.Controllers
         [HttpPost("[controller]")]
         [HttpPost("[controller]/[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Report(ReportInfo report)
+        public async Task<IActionResult> Report(ReportInfo reportInfo)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
             {
                 ReportService myService = new ReportService(client);
-                string ans = await myService.CeateReport(report);
+                string ans = await myService.CreateReport(reportInfo);
                 Response response = new Response {
                     Ans = ans
                 };

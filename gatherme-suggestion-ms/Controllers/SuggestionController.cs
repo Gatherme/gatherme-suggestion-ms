@@ -23,7 +23,7 @@ namespace gatherme_suggestion_ms.Controllers
         }
         [HttpGet("[controller]/[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> getSuggestion(string id)
+        public async Task<IActionResult> GetSuggestion(string id)
         {
             var settings = ConnectionSettings.CreateBasicAuth(Neo4JClient.uri, Neo4JClient.user, Neo4JClient.password);
             using (var client = new Neo4JClient(settings))
