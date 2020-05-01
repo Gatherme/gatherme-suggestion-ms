@@ -190,16 +190,49 @@ namespace gatherme_suggestion_ms.Service
             return users;
         }
 
+        public async Task<List<Like>> UsersLikes(IList<User> users)
+        {
+            string cypher = new StringBuilder()
+            .AppendLine("UNWIND $users AS user")
+            .AppendLine("MATCH (u:User{id: user.id})")
+            .AppendLine("MATCH (u)-[:LIKE]->(l:Like)")
+            .AppendLine("RETURN l.name")
+            .ToString();
+            var session = client.GetDriver().AsyncSession(o => o.WithDatabase("neo4j"));
+            List<Like> myLikes = new List<Like>();
+            try
+            {
+                var reader = await session.RunAsync(cypher, new Dictionary<string, object>() { { "users", ParameterSerializer.ToDictionary(users) } });
+                System.Console.WriteLine("****user's likes:");
+                while (await reader.FetchAsync())
+                {
+                    foreach (var item in reader.Current.Values)
+                    {
+                        Like auxLike = new Like
+                        {
+                            Name = item.Value.ToString()
+                        };
+                        System.Console.WriteLine(item.Value.ToString());
+                        myLikes.Add(auxLike);
+                    }
+                }
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return myLikes;
+        }
 
 
         /*Interfaz*/
-        public void addUser(User like)
+        public void addUser(User user)
         {
-            this.myUsers.Add(like);
+            this.myUsers.Add(user);
         }
-        public void addMetadata(UserInfo likeInfo)
+        public void addMetadata(UserInfo userInfo)
         {
-            this.myUserInfos.Add(likeInfo);
+            this.myUserInfos.Add(userInfo);
         }
 
 
