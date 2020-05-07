@@ -21,13 +21,20 @@ namespace gatherme_suggestion_ms
         public async Task CreateIndices()
         {
             string[] queries = {
-                "CREATE INDEX ON :User(name)",
+                "CREATE CONSTRAINT ON (u:User) ASSERT u.name IS UNIQUE",
                 "CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE",
                 "CREATE CONSTRAINT ON (s:Suggestion) ASSERT s.id IS UNIQUE",
                 "CREATE INDEX ON :Suggestion(isActive)",
                 "CREATE CONSTRAINT ON (c:Category) ASSERT c.name IS UNIQUE",
                 "CREATE CONSTRAINT ON (l:Like) ASSERT l.name IS UNIQUE",
-                "CREATE CONSTRAINT ON (r:Report) ASSERT r.id IS UNIQUE"
+                "CREATE CONSTRAINT ON (r:Report) ASSERT r.id IS UNIQUE",
+                "CREATE(c:Category{name: \"Academico\"})",
+                "CREATE(c:Category{name: \"Deporte\"})",
+                "CREATE(c:Category{name: \"Juegos\"})",
+                "CREATE(c:Category{name: \"Cultural\"})",
+                "CREATE(c:Category{name: \"Comidas\"})",
+                "CREATE(c:Category{name: \"Fiesta\"})",
+                "CREATE(c:Category{name: \"Otros\"})"
             };
             var session = driver.AsyncSession(o => o.WithDatabase("neo4j"));
             try
