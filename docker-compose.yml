@@ -5,14 +5,14 @@ networks:
 
 services:
   gathermesuggestionms:
-    image: gathermesuggestionms
+    image: heldeg/suggestion-ms
     build:
       context: .
       dockerfile: gatherme-suggestion-ms/Dockerfile
     networks: 
       - neo4j-network
     ports:
-      - "80:80"
+      - "3013:3013"
 
   gatherme-suggestion-db:
     image: neo4j:4.0.0

@@ -8,7 +8,9 @@ namespace gatherme_suggestion_ms
     public class Neo4JClient : IDisposable
     {
         //public static string uri = "bolt://localhost:7687";
-        public static string uri = "bolt://172.17.0.1:7687";
+        //public static string uri = "bolt://172.17.0.1:7687";
+        public static string uri = "bolt://suggestiondb.default.svc.cluster.local:7687";
+
         public static string user = "neo4j";
         public static string password="admin";
         private readonly IDriver driver;
